@@ -93,6 +93,7 @@ static string const g_strGas = "gas";
 static string const g_strHelp = "help";
 static string const g_strInputFile = "input-file";
 static string const g_strInterface = "interface";
+static string const g_strIR = "ir";
 static string const g_strJulia = "julia";
 static string const g_strLibraries = "libraries";
 static string const g_strLink = "link";
@@ -131,6 +132,7 @@ static string const g_argFormal = g_strFormal;
 static string const g_argGas = g_strGas;
 static string const g_argHelp = g_strHelp;
 static string const g_argInputFile = g_strInputFile;
+static string const g_argIR = g_strIR;
 static string const g_argJulia = "julia";
 static string const g_argLibraries = g_strLibraries;
 static string const g_argLink = g_strLink;
@@ -393,6 +395,13 @@ void CommandLineInterface::handleFormal()
 		cout << "Formal version:" << endl << m_compiler->formalTranslation() << endl;
 }
 
+void CommandLineInterface::handleIR()
+{
+	AssemblyStack stack = m_compiler->assemblyStack();
+	cout << endl << "======= Intermediate Representation (IR) =======" << endl;
+	cout << stack.print() << endl;
+}
+
 void CommandLineInterface::readInputFilesAndConfigureRemappings()
 {
 	bool addStdin = false;
@@ -594,6 +603,7 @@ Allowed options)",
 		(g_argBinaryRuntime.c_str(), "Binary of the runtime part of the contracts in hex.")
 		(g_argCloneBinary.c_str(), "Binary of the clone contracts in hex.")
 		(g_argAbi.c_str(), "ABI specification of the contracts.")
+		(g_argIR.c_str(), "Intermediate Representation (IR) of all source files.")
 		(g_argSignatureHashes.c_str(), "Function signature hashes of the contracts.")
 		(g_argNatspecUser.c_str(), "Natspec user documentation of all contracts.")
 		(g_argNatspecDev.c_str(), "Natspec developer documentation of all contracts.")
@@ -1110,6 +1120,9 @@ void CommandLineInterface::outputCompilationResults()
 	handleAst(g_argAst);
 	handleAst(g_argAstJson);
 	handleAst(g_argAstCompactJson);
+
+	if (m_args.count(g_argIR))
+		handleIR();
 
 	vector<string> contracts = m_compiler->contractNames();
 	for (string const& contract: contracts)

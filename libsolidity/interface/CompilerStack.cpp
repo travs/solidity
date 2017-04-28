@@ -41,6 +41,7 @@
 #include <libsolidity/interface/Natspec.h>
 #include <libsolidity/interface/GasEstimator.h>
 #include <libsolidity/formal/Why3Translator.h>
+#include <libsolidity/codegen/ir/IRGenerate.h>
 
 #include <libevmasm/Exceptions.h>
 
@@ -328,6 +329,18 @@ bool CompilerStack::prepareFormalAnalysis(ErrorReporter* _errorReporter)
 	m_formalTranslation = translator.translation();
 
 	return true;
+}
+
+AssemblyStack const CompilerStack::assemblyStack() const
+{
+	/// TODO: return an assembly for each contract
+	IRGenerate ir;
+	for (Source const* source: m_sourceOrder)
+		ir.process(*source->ast);
+	AssemblyStack stack;
+	/// TODO: set scanner
+	stack.analyze(ir.body());
+	return stack;
 }
 
 eth::AssemblyItems const* CompilerStack::assemblyItems(string const& _contractName) const
