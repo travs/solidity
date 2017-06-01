@@ -104,7 +104,14 @@ parseAnalyseAndReturnError(string const& _source, bool _reportWarnings = false, 
 			if (!StaticAnalyzer(errorReporter).analyze(*sourceUnit))
 				success = false;
 		if (errorReporter.errors().size() > 1 && !_allowMultipleErrors)
-			BOOST_FAIL("Multiple errors found");
+		{
+			string message = "Multiple errors found: ";
+			for (auto const& e: errorReporter.errors())
+				if (string const* description = boost::get_error_info<errinfo_comment>(*e))
+					message += *description + ", ";
+
+			BOOST_FAIL(message);
+		}
 		for (auto const& currentError: errorReporter.errors())
 		{
 			if (
