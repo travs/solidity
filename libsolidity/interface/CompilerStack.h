@@ -137,7 +137,7 @@ public:
 	std::string const& formalTranslation() const { return m_formalTranslation; }
 
 	/// @returns the assembly stack for a contract.
-	AssemblyStack const assemblyStack() const;
+	AssemblyStack const assemblyStack(std::string const& _contractName) const;
 
 	/// @returns the assembled object for a contract.
 	eth::LinkerObject const& object(std::string const& _contractName = "") const;
