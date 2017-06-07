@@ -35,6 +35,12 @@ using namespace dev::solidity::assembly;
 
 void CodeTransform::run(Block const& _block)
 {
+	// TODO: move to constructor
+	m_builtinFunctions["abort"] = solidity::Instruction::INVALID;
+	m_builtinFunctions["discardu256"] = solidity::Instruction::POP;
+	m_builtinFunctions["mulu256"] = solidity::Instruction::MUL;
+	m_builtinFunctions["divu256"] = solidity::Instruction::DIV;
+
 	m_scope = m_info.scopes.at(&_block).get();
 
 	int blockStartStackHeight = m_assembly.stackHeight();
@@ -101,6 +107,17 @@ void CodeTransform::operator()(FunctionCall const& _call)
 	solAssert(m_scope, "");
 
 	m_assembly.setSourceLocation(_call.location);
+
+	if (m_builtinFunctions.count(_call.functionName.name))
+	{
+		m_assembly.setSourceLocation(_call.location);
+		for (auto const& arg: _call.arguments | boost::adaptors::reversed)
+			visitExpression(arg);
+		m_assembly.appendInstruction(m_builtinFunctions.at(_call.functionName.name));
+		checkStackHeight(&_call);
+		return;
+	}
+
 	EVMAssembly::LabelID returnLabel(-1); // only used for evm 1.0
 	if (!m_evm15)
 	{

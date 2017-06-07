@@ -29,6 +29,7 @@ namespace dev
 {
 namespace solidity
 {
+enum class Instruction: uint8_t;
 class ErrorReporter;
 namespace assembly
 {
@@ -129,6 +130,8 @@ private:
 	/// for inline assembly and different stack heights depending on the EVM backend used
 	/// (EVM 1.0 or 1.5).
 	int m_stackAdjustment = 0;
+
+	std::map<std::string, solidity::Instruction> m_builtinFunctions;
 };
 
 }
