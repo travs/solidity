@@ -108,7 +108,7 @@ void CodeTransform::operator()(FunctionCall const& _call)
 
 	m_assembly.setSourceLocation(_call.location);
 
-	if (m_builtinFunctions.count(_call.functionName.name))
+	if (m_julia && m_builtinFunctions.count(_call.functionName.name))
 	{
 		m_assembly.setSourceLocation(_call.location);
 		for (auto const& arg: _call.arguments | boost::adaptors::reversed)

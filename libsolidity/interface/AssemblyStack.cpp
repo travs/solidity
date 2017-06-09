@@ -94,7 +94,7 @@ eth::LinkerObject AssemblyStack::assemble(Machine _machine) const
 	case Machine::EVM15:
 	{
 		julia::EVMAssembly assembly(true);
-		julia::CodeTransform(assembly, *m_analysisInfo, true).run(*m_parserResult);
+		julia::CodeTransform(assembly, *m_analysisInfo, m_language == Language::JULIA, true).run(*m_parserResult);
 		return assembly.finalize();
 	}
 	case Machine::eWasm:
