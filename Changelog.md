@@ -9,6 +9,7 @@ Features:
 
 Bugfixes:
  * Unused variable warnings no longer issued for variables used inside inline assembly
+ * Fixed crash concerning non-callable types.
 
 ### 0.4.11 (2017-05-03)
 
